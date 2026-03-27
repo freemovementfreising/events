@@ -282,6 +282,131 @@ main {
   padding: 2.5rem 1rem;
 }
 
+/* ── Guidelines button ── */
+.guidelines-btn {
+  display: inline-block;
+  margin-top: 0.85rem;
+  padding: 0.45rem 1.25rem;
+  border: 2px solid #555;
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #555;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.guidelines-btn:hover {
+  background: #333;
+  border-color: #333;
+  color: #fff;
+}
+
+/* ── Modal ── */
+.modal[hidden] { display: none; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+
+.modal-box {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  margin: 2rem 1rem;
+  width: 100%;
+  max-width: 680px;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-close {
+  position: sticky;
+  top: 0;
+  align-self: flex-end;
+  margin: 0.75rem 0.75rem 0 0;
+  background: #f0ece4;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.modal-close:hover { background: #e0dbd0; }
+
+.modal-body {
+  padding: 0 1.75rem 2rem;
+}
+
+/* Markdown rendered content */
+.modal-body h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #1a1a1a;
+}
+
+.modal-body > p:first-of-type {
+  color: #888;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+
+.modal-body h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.5rem;
+  color: #1a1a1a;
+}
+
+.modal-body p {
+  font-size: 0.88rem;
+  color: #444;
+  margin-bottom: 0.6rem;
+}
+
+.modal-body ul, .modal-body ol {
+  padding-left: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.modal-body li {
+  font-size: 0.88rem;
+  color: #444;
+  margin-bottom: 0.35rem;
+}
+
+.modal-body strong { color: #222; }
+
+.modal-body a { color: #3a8a3a; }
+
+.modal-body hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 1.25rem 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 400px) {
   header h1 { font-size: 1.1rem; }
