@@ -1,5 +1,7 @@
 # Free Movement Collective Freising - Events
 
+![FM](FMLogo.jpg)
+
 This is the event calender for the free movement collective Freising
 
 # Next events
