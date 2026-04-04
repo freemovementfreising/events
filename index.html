@@ -16,33 +16,25 @@
   </header>
 
   <main>
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="upcoming">Upcoming</button>
-      <button class="tab-btn" data-tab="past">Past</button>
+    <div class="action-buttons">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6sktSnoMkri3ScKt6hVvaoe81jDIT7dhwoluh3zf5EAZpSg/viewform"
+         target="_blank" rel="noopener noreferrer" class="action-btn">
+        Propose Event
+      </a>
+      <button class="action-btn" disabled>
+        Register to Event
+      </button>
     </div>
 
-    <div id="tab-upcoming" class="tab-content active">
-      <section class="calendar-section">
-        <div class="calendar-nav">
-          <button id="prev-month" aria-label="Previous month">&#8249;</button>
-          <h2 id="calendar-month-label"></h2>
-          <button id="next-month" aria-label="Next month">&#8250;</button>
-        </div>
-        <div id="calendar-grid"></div>
-      </section>
-
-      <section class="list-section">
-        <h2>Events</h2>
-        <div id="event-list"></div>
-      </section>
-    </div>
-
-    <div id="tab-past" class="tab-content">
-      <section class="list-section">
-        <h2>Past Events</h2>
-        <div id="past-event-list"></div>
-      </section>
-    </div>
+    <section class="calendar-section">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=413e5457450bf4a5ac83232c06228ef63e0c55bf803b46424351ee1b47320bd3%40group.calendar.google.com&ctz=Europe%2FBerlin&bgcolor=%23F6DCA1"
+        class="google-calendar-embed"
+        frameborder="0"
+        scrolling="no"
+        title="Free Movement Collective Freising — Events">
+      </iframe>
+    </section>
   </main>
 
   <!-- Guidelines modal -->
@@ -54,7 +46,6 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/app.js"></script>
 </body>
