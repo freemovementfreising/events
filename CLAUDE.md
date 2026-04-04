@@ -1,4 +1,4 @@
-# CLAUDE.md — Dancing Group Website (GitHub Pages + YAML Calendar)
+# CLAUDE.md — Dancing Group Website (GitHub Pages + Google Calendar)
 
 ## Project Overview
 
@@ -14,83 +14,162 @@ The site must remain fully static (no backend).
 
 ---
 
+## System Architecture
+
+The event management system consists of several connected parts:
+
+```
+[Public Website]
+    |
+    |-- Reads events from --> [Public Google Calendar]
+    |-- Links to -----------> [Google Form: Propose Event]
+    |-- Links to -----------> [Google Form: Subscribe to Event]
+
+[Google Form: Propose Event]
+    |-- Auto-submits to --> [Private Google Sheet: Event Proposals]
+                                    |
+                            [Google Apps Script]  <-- triggered on new row
+                                    |
+                                    v
+                            [Admin-Only Google Calendar: Proposals]
+                                    |
+                            Admins review & edit events directly
+                            in the calendar UI (no sheet needed)
+                                    |
+                            Admin moves event to [Public Google Calendar]
+                            (by changing which calendar it belongs to)
+
+[Google Form: Subscribe to Event]
+    |-- Submits to --> [Private Google Sheet: Subscriptions]
+                            |
+                       [Admin access only]
+```
+
+### Key Principle
+
+The website is read-only and link-based. All data entry and management happens outside the website, via Google Forms, Sheets, Apps Script, and Google Calendar. The website never writes data.
+
+### Admin Workflow (Event Proposals)
+
+1. A proposal form submission automatically lands in the private Sheet
+2. An Apps Script trigger fires and creates the event in the **admin-only proposals calendar**
+3. Admins work entirely within Google Calendar — they review the event, make any edits directly there
+4. To publish: the admin moves the event from the proposals calendar to the **public calendar** (via "Change calendar" in the event editor)
+5. To reject: the admin simply deletes the event from the proposals calendar
+
+---
+
 ## Core Feature: Event Calendar
 
-We maintain a list of dance events and display them on the website.
+The calendar on the website:
 
-Each event includes:
-
-* Title
-* Date
-* Time
-* Location
-* Optional description
-
-The calendar should:
-
-* Show upcoming events
-* Sort events by date (ascending)
-* Be easy to scan on mobile
-* Be easy to maintain via a YAML file
+* Reads events from a **public Google Calendar** via the Google Calendar API (or public iCal feed)
+* Shows upcoming events
+* Sorts events by date (ascending)
+* Is easy to scan on mobile
 
 ---
 
 ## Data Source (CRITICAL)
 
-All events are stored in:
+Events are stored in and served from a **public Google Calendar**.
 
-/data/events.yaml
+### How events get onto the calendar:
 
-### Example format:
-
-```yaml
-- title: Salsa Night
-  date: 2026-04-10
-  organizers:
-    - Anna
-    - Ben
-  meet_time: "18:45"
-  start_time: "19:00"
-  end_time: "22:00"
-  location: Community Hall
-  description: Beginner-friendly social dance
-  price: 5
-  things_required:
-    - Water bottle
-  things_optional:
-    - Comfortable shoes
-```
+1. Someone fills in the **Propose Event** Google Form
+2. Their submission lands in a **private Google Sheet** (admins only)
+3. Admins review each row and set a status: `approved`, `denied`, or `pending`
+4. A **Google Apps Script** runs on a trigger and:
+   - Adds newly approved events to the public Google Calendar
+   - Updates calendar events when the sheet row is edited
+   - Removes calendar events when a row is deleted or marked `denied`
 
 ### Rules:
 
-* Always use this structure
 * Do NOT hardcode events in HTML
-* Always read from the YAML file
-* Dates must be in ISO format: YYYY-MM-DD
-* Times must be strings in HH:MM format
-* `organizers` is a list of names (can be one or many)
-* `things_required` and `things_optional` are separate lists (can be empty or omitted)
-* `meet_time`, `end_time`, `description`, `price`, `things_required`, and `things_optional` are optional
-* `price` must be a plain number (e.g. `5`), no currency symbol or text
+* Do NOT use a local YAML or JSON file as the calendar source
+* Always fetch events from the Google Calendar (API or iCal)
+* The Google Calendar ID and any API keys/config values must be stored in a config file or as constants in the JS — never hardcoded inline across multiple places
 
 ---
 
-## YAML Parsing (IMPORTANT)
+## Google Calendar Integration (IMPORTANT)
 
-Because this is a static site, YAML must be parsed in the browser.
+Because this is a static site, calendar data must be fetched client-side.
+
+### Options (in order of preference):
+
+1. **Public iCal feed** — fetch the `.ics` URL from the Google Calendar, parse it in the browser (no API key needed)
+2. **Google Calendar API** — use the public calendar's API endpoint with an API key (read-only, no auth needed for public calendars)
 
 ### Requirements:
 
-* Use `js-yaml` via CDN
-* Do NOT create a custom parser
+* Do NOT require user login or OAuth
+* Do NOT create a backend proxy
 * Do NOT introduce a build step
+* Use a small CDN library if needed for iCal parsing (e.g., `ical.js`)
 
-### Expected approach:
+### Expected approach (iCal):
 
-1. Fetch `/data/events.yaml`
-2. Parse with `js-yaml`
+1. Fetch the public iCal URL
+2. Parse with `ical.js` (or equivalent)
 3. Convert into JavaScript objects
+4. Filter to upcoming events only
+5. Sort by date (ascending)
+6. Render to the DOM
+
+### Expected approach (API):
+
+1. Fetch from `https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events` with API key
+2. Filter to upcoming events (`timeMin` = now)
+3. Sort by start time
 4. Render to the DOM
+
+---
+
+## Google Forms
+
+The website contains two links (not embedded forms — just links):
+
+### 1. Propose an Event
+
+* A link to a public Google Form where anyone can suggest a new event
+* The form collects: title, date, time, location, description, organizer name/contact, etc.
+* Responses go to a **private Google Sheet** visible only to admins
+
+### 2. Subscribe to an Event
+
+* A link to a public Google Form where someone can express interest in attending an event
+* The form collects: name, contact info, which event
+* Responses go to a **private Google Sheet** visible only to admins
+
+### Rules:
+
+* Store the form URLs as constants in the JS or as `data-` attributes in the HTML — never scattered inline
+* Do not embed the forms as iframes unless explicitly requested
+
+---
+
+## Google Apps Script (Out of Scope for Website Code)
+
+The Apps Script lives in Google Sheets, not this repository. Document its expected behavior here for reference:
+
+* Trigger: `onFormSubmit` — fires automatically when a new proposal row is added
+* Reads the new row from the Event Proposals sheet
+* Creates an event in the **admin-only proposals calendar** with all submitted details
+* Writes the resulting calendar event ID back into the sheet row (for traceability)
+
+### What the script does NOT do:
+
+* It does not touch the public calendar — that is the admin's manual action
+* It does not poll for updates or deletions — once the event is in the proposals calendar, admins own it
+
+### Admin action (no script needed):
+
+* **Approve**: open the event in the proposals calendar → "More options" → change the calendar to the public one → save
+* **Reject**: delete the event from the proposals calendar
+
+This script is maintained separately. The website only consumes the resulting public calendar.
 
 ---
 
@@ -106,7 +185,8 @@ This is a lightweight static site.
 
 ### Allowed (with care):
 
-* Small CDN libraries (like js-yaml)
+* Small CDN libraries (e.g., `ical.js` for iCal parsing)
+* Google Calendar public API (read-only, no auth)
 
 ### NOT allowed (unless explicitly approved):
 
@@ -114,6 +194,7 @@ This is a lightweight static site.
 * Build tools (Webpack, Vite, etc.)
 * Backend services
 * Databases
+* OAuth or any user login
 
 ---
 
@@ -124,7 +205,7 @@ Keep the project organized:
 * `/index.html` → main page
 * `/css/` → styles
 * `/js/` → JavaScript
-* `/data/` → YAML data files
+* `/config.js` (or similar) → calendar ID, form URLs, and other config constants
 
 Do not reorganize the structure unless asked.
 
@@ -134,11 +215,10 @@ Do not reorganize the structure unless asked.
 
 When implementing or modifying the calendar:
 
-1. Load events from `/data/events.yaml`
-2. Parse YAML using js-yaml
-3. Validate data (basic checks)
-4. Sort events by date (ascending)
-5. Render into a dedicated container
+1. Fetch events from the public Google Calendar (iCal or API)
+2. Validate/filter to upcoming events only
+3. Sort events by date (ascending)
+4. Render into a dedicated container
 
 ### Rendering rules:
 
@@ -147,6 +227,7 @@ When implementing or modifying the calendar:
 * Show location and time
 * Show description if present
 * Handle empty state (e.g., "No upcoming events")
+* Handle fetch failure gracefully (e.g., "Could not load events")
 
 ---
 
@@ -156,6 +237,7 @@ When implementing or modifying the calendar:
 * Mobile-first (responsive)
 * Readable typography
 * Avoid visual clutter
+* The "Propose Event" and "Subscribe" links should be clearly visible
 
 ### Nice-to-have (only if simple):
 
@@ -187,8 +269,8 @@ When implementing or modifying the calendar:
 
 * Gracefully handle:
 
-  * Missing YAML file
-  * Invalid YAML format
+  * Google Calendar unreachable or rate-limited
+  * Invalid or empty calendar response
   * Empty event list
 
 * Never crash the page
@@ -205,9 +287,9 @@ Before finishing any task:
 * Ensure:
 
   * No console errors
-  * Events render correctly
+  * Events render correctly (or empty state shows)
   * Layout works on mobile
-  * YAML changes reflect correctly
+  * Form links open correctly
 
 ---
 
@@ -216,8 +298,8 @@ Before finishing any task:
 * Month grouping
 * Event filtering
 * Calendar grid view
-* Google Calendar integration
 * ICS download support
+* Embedded Google Form (instead of link)
 
 ---
 
