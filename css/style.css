@@ -48,19 +48,329 @@ main {
   padding: 1.25rem 1rem 3rem;
 }
 
-/* ── Calendar embed ── */
+/* ── Calendar section ── */
 .calendar-section {
-  background: #fff;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.google-calendar-embed {
-  display: block;
-  width: 100%;
-  height: 700px;
-  border: none;
+/* Grid card */
+.cal-grid-wrapper {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
+  padding: 1.25rem;
+}
+
+.cal-grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cal-month-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.cal-nav-btn {
+  background: none;
+  border: 1px solid #e8e4de;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.cal-nav-btn:hover {
+  background: #f5f3ef;
+  border-color: #ccc;
+}
+
+.cal-today-btn {
+  margin-left: 0.35rem;
+  padding: 0 0.75rem;
+  height: 34px;
+  background: none;
+  border: 1px solid #e8e4de;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.cal-today-btn:hover {
+  background: #f5f3ef;
+  border-color: #ccc;
+}
+
+/* Weekday headers */
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.3rem;
+}
+
+.cal-weekdays span {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #bbb;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 0.4rem;
+}
+
+/* Day cells */
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  gap: 3px;
+  transition: background 0.1s;
+}
+
+.cal-day-num {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.cal-day--past .cal-day-num {
+  color: #d0ccc6;
+}
+
+.cal-day--today {
+  background: #1a1a1a;
+}
+
+.cal-day--today .cal-day-num {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Future event days — warm amber tint */
+.cal-day--has-event:not(.cal-day--today):not(.cal-day--past) {
+  background: #fdf5ea;
+  cursor: pointer;
+}
+
+.cal-day--has-event:not(.cal-day--today):not(.cal-day--past):hover {
+  background: #f5e3c4;
+}
+
+/* Past event days — muted grey, still clickable */
+.cal-day--past.cal-day--has-event {
+  background: #f2f1ef;
+  cursor: pointer;
+}
+
+.cal-day--past.cal-day--has-event:hover {
+  background: #eae9e5;
+}
+
+.cal-day--past .cal-dot {
+  background: #ccc;
+}
+
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c97d2e;
+  flex-shrink: 0;
+}
+
+.cal-day--today .cal-dot {
+  background: #f5be72;
+}
+
+/* Events list card */
+.cal-events-wrapper {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
+  padding: 1.5rem 1.25rem 1.75rem;
+  position: relative;
+  max-height: 560px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* Thin subtle scrollbar */
+.cal-events-wrapper::-webkit-scrollbar { width: 4px; }
+.cal-events-wrapper::-webkit-scrollbar-track { background: transparent; }
+.cal-events-wrapper::-webkit-scrollbar-thumb { background: #d4cfc7; border-radius: 2px; }
+
+.cal-events-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem;
+}
+
+.cal-group-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #bbb;
+  margin: 1.5rem 0 0.6rem;
+}
+
+/* Remove extra top margin from first group */
+.cal-group-heading:first-child { margin-top: 0; }
+
+/* Past / upcoming divider */
+.cal-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #c97d2e;
+}
+
+.cal-divider::before,
+.cal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #f0ece4;
+}
+
+/* Hidden when there are no past events (keeps scroll target in DOM) */
+.cal-divider--hidden {
+  display: none;
+}
+
+/* Event cards */
+.event-card {
+  display: flex;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #f0ece4;
+}
+
+.event-card:last-child { border-bottom: none; }
+
+.event-badge {
+  flex-shrink: 0;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 0.45rem 0.25rem;
+  color: #fff;
+}
+
+.event-badge-day {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.event-badge-month {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #999;
+  line-height: 1.6;
+}
+
+.event-badge-weekday {
+  font-size: 0.58rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.event-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+
+.event-meta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.15rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.event-icon { font-size: 0.75rem; }
+
+.event-desc {
+  font-size: 0.78rem;
+  color: #999;
+  margin-top: 0.4rem;
+  line-height: 1.55;
+}
+
+.event-register-btn {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.35rem 1rem;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.event-register-btn:hover {
+  background: #444;
+}
+
+/* State messages */
+.cal-empty, .cal-loading {
+  font-size: 0.88rem;
+  color: #bbb;
+  padding: 0.5rem 0;
+}
+
+.cal-error {
+  font-size: 0.88rem;
+  color: #c44;
+  padding: 0.5rem 0;
 }
 
 /* ── Action buttons ── */
@@ -174,5 +484,9 @@ main {
 /* ── Responsive ── */
 @media (max-width: 600px) {
   header h1 { font-size: 1.1rem; }
-  .google-calendar-embed { height: 500px; }
+  .cal-day-num { font-size: 0.75rem; }
+  .event-badge { width: 44px; }
+  .event-badge-day { font-size: 1.1rem; }
+  .event-title { font-size: 0.88rem; }
+  .cal-events-wrapper { max-height: 420px; }
 }
