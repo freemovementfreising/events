@@ -2,7 +2,7 @@
 
 const CONFIG = {
 
-  // Paste your deployed Apps Script URL here (ends with /exec)
+  // Deployed Apps Script URL (ends with /exec)
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwdzqWxaGC61dM5fBd5ZWpjoW-wl7uX0rnzDJG5kGFsjhbYydSQlp7xWtTsxEOe5xMy/exec',
 
   // Google Form links

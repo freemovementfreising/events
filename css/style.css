@@ -97,6 +97,25 @@ main {
   border-color: #ccc;
 }
 
+.cal-today-btn {
+  margin-left: 0.35rem;
+  padding: 0 0.75rem;
+  height: 34px;
+  background: none;
+  border: 1px solid #e8e4de;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.cal-today-btn:hover {
+  background: #f5f3ef;
+  border-color: #ccc;
+}
+
 /* Weekday headers */
 .cal-weekdays {
   display: grid;
@@ -152,13 +171,28 @@ main {
   font-weight: 700;
 }
 
-.cal-day--has-event:not(.cal-day--today) {
+/* Future event days — warm amber tint */
+.cal-day--has-event:not(.cal-day--today):not(.cal-day--past) {
   background: #fdf5ea;
   cursor: pointer;
 }
 
-.cal-day--has-event:not(.cal-day--today):hover {
-  background: #faecd8;
+.cal-day--has-event:not(.cal-day--today):not(.cal-day--past):hover {
+  background: #f5e3c4;
+}
+
+/* Past event days — muted grey, still clickable */
+.cal-day--past.cal-day--has-event {
+  background: #f2f1ef;
+  cursor: pointer;
+}
+
+.cal-day--past.cal-day--has-event:hover {
+  background: #eae9e5;
+}
+
+.cal-day--past .cal-dot {
+  background: #ccc;
 }
 
 .cal-dot {
@@ -179,7 +213,16 @@ main {
   border-radius: 14px;
   box-shadow: 0 1px 5px rgba(0,0,0,0.07);
   padding: 1.5rem 1.25rem 1.75rem;
+  position: relative;
+  max-height: 560px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
+
+/* Thin subtle scrollbar */
+.cal-events-wrapper::-webkit-scrollbar { width: 4px; }
+.cal-events-wrapper::-webkit-scrollbar-track { background: transparent; }
+.cal-events-wrapper::-webkit-scrollbar-thumb { background: #d4cfc7; border-radius: 2px; }
 
 .cal-events-heading {
   font-size: 1rem;
@@ -199,6 +242,32 @@ main {
 
 /* Remove extra top margin from first group */
 .cal-group-heading:first-child { margin-top: 0; }
+
+/* Past / upcoming divider */
+.cal-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #c97d2e;
+}
+
+.cal-divider::before,
+.cal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #f0ece4;
+}
+
+/* Hidden when there are no past events (keeps scroll target in DOM) */
+.cal-divider--hidden {
+  display: none;
+}
 
 /* Event cards */
 .event-card {
@@ -419,4 +488,5 @@ main {
   .event-badge { width: 44px; }
   .event-badge-day { font-size: 1.1rem; }
   .event-title { font-size: 0.88rem; }
+  .cal-events-wrapper { max-height: 420px; }
 }
