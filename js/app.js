@@ -91,11 +91,56 @@ function buildEventCard(e) {
   const dateStr  = eventDateStr(e);
   const isPast   = dateStr < todayStr();
 
+  // ── Detect multi-day span ─────────────────────────────────────────────────────
+  let endIncl = null;
+  if (isAllDay && e.end?.date) {
+    const endExcl = new Date(e.end.date + 'T00:00:00');
+    const candidate = new Date(endExcl);
+    candidate.setDate(candidate.getDate() - 1);
+    if (candidate > d) endIncl = candidate; // truly spans multiple days
+  } else if (!isAllDay && e.end?.dateTime) {
+    const endDt = new Date(e.end.dateTime);
+    // Different calendar date = multi-day timed event
+    if (endDt.getFullYear() !== d.getFullYear() ||
+        endDt.getMonth()    !== d.getMonth()    ||
+        endDt.getDate()     !== d.getDate()) {
+      endIncl = endDt;
+    }
+  }
+  const isMultiDay = endIncl !== null;
+
   // ── Date badge ────────────────────────────────────────────────────────────────
-  const badgeHtml =
-    `<span class="event-badge-day">${d.getDate()}</span>` +
-    `<span class="event-badge-month">${d.toLocaleDateString('en-GB', { month: 'short' })}</span>` +
-    `<span class="event-badge-weekday">${d.toLocaleDateString('en-GB', { weekday: 'short' })}</span>`;
+  let badgeHtml;
+  if (isMultiDay) {
+    const endDay     = endIncl.getDate();
+    const endMonthSh = endIncl.toLocaleDateString('en-GB', { month: 'short' });
+    const sameMonth  = endIncl.getMonth()    === d.getMonth() &&
+                       endIncl.getFullYear() === d.getFullYear();
+    if (sameMonth) {
+      badgeHtml =
+        `<span class="event-badge-day-range">${d.getDate()}\u2013${endDay}</span>` +
+        `<span class="event-badge-month">${endMonthSh}</span>`;
+    } else {
+      badgeHtml =
+        `<span class="event-badge-range">${d.getDate()} ${d.toLocaleDateString('en-GB', { month: 'short' })}</span>` +
+        `<span class="event-badge-range-arrow">\u2192</span>` +
+        `<span class="event-badge-range">${endDay} ${endMonthSh}</span>`;
+    }
+  } else {
+    badgeHtml =
+      `<span class="event-badge-day">${d.getDate()}</span>` +
+      `<span class="event-badge-month">${d.toLocaleDateString('en-GB', { month: 'short' })}</span>` +
+      `<span class="event-badge-weekday">${d.toLocaleDateString('en-GB', { weekday: 'short' })}</span>`;
+  }
+
+  // ── Date range line shown in event details for multi-day events ───────────────
+  let dateRangeHtml = '';
+  if (isMultiDay) {
+    const fmt      = { day: 'numeric', month: 'long', year: 'numeric' };
+    const startFmt = d.toLocaleDateString('en-GB', fmt);
+    const endFmt   = endIncl.toLocaleDateString('en-GB', fmt);
+    dateRangeHtml  = `<p class="event-meta"><span class="event-icon">&#128197;</span>${startFmt} \u2013 ${endFmt}</p>`;
+  }
 
   // ── Time ──────────────────────────────────────────────────────────────────────
   let timeHtml = '';
@@ -159,7 +204,7 @@ function buildEventCard(e) {
     `<div class="event-badge">${badgeHtml}</div>` +
     `<div class="event-info">` +
       `<h4 class="event-title">${esc(e.summary || 'Untitled')}</h4>` +
-      timeHtml + locationHtml + roomHtml + arrivalHtml + organizersHtml +
+      dateRangeHtml + timeHtml + locationHtml + roomHtml + arrivalHtml + organizersHtml +
       descHtml + bringHtml + registerHtml +
     `</div>` +
   `</div>`;
