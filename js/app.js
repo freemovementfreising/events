@@ -160,38 +160,11 @@ function buildEventCard(e) {
       `target="_blank" rel="noopener noreferrer" class="event-location-link">${esc(e.location)}</a></p>`
     : '';
 
-  // ── Structured fields (from proposals script) vs raw description fallback ─────
-  let roomHtml = '', arrivalHtml = '', organizersHtml = '',
-      descHtml = '', bringHtml = '', registerUrl = null;
-
-  if (e.room || e.arrivalTime || e.organizers || e.whatToDo || e.thingsToBring || e.registerUrl) {
-    // Structured event from proposals form
-    if (e.room)
-      roomHtml      = `<p class="event-meta"><span class="event-icon">&#128682;</span>${esc(e.room)}</p>`;
-    if (e.arrivalTime)
-      arrivalHtml   = `<p class="event-meta"><span class="event-icon">&#9201;</span>Arrive by ${esc(e.arrivalTime)}</p>`;
-    if (e.organizers)
-      organizersHtml = `<p class="event-meta event-meta--organizers"><span class="event-icon">&#128101;</span>${esc(e.organizers)}</p>`;
-    if (e.whatToDo)
-      descHtml      = `<p class="event-desc">${esc(e.whatToDo).replace(/\n/g, '<br>')}</p>`;
-    if (e.thingsToBring)
-      bringHtml     = `<p class="event-bring"><span class="event-bring-label">&#127890; Things to bring</span><br>${esc(e.thingsToBring).replace(/\n/g, '<br>')}</p>`;
-    registerUrl = e.registerUrl || null;
-
-  } else if (e.description) {
-    // Manually created event — fall back to parsing raw description
-    let descCleaned = e.description;
-    const m = descCleaned.match(/register here\s*:\s*(https?:\/\/\S+)/i);
-    if (m) {
-      registerUrl = m[1];
-      descCleaned = descCleaned
-        .replace(/register here\s*:\s*https?:\/\/\S+[ \t]*(\r?\n)?/i, '')
-        .split('\n').filter(line => /\p{L}/u.test(line)).join('\n')
-        .replace(/\n{3,}/g, '\n\n').trim();
-    }
-    if (descCleaned)
-      descHtml = `<p class="event-desc">${esc(descCleaned).replace(/\n/g, '<br>')}</p>`;
-  }
+  // ── Description + register URL ────────────────────────────────────────────────
+  const registerUrl = e.registerUrl || null;
+  const descHtml = e.description
+    ? `<p class="event-desc">${esc(e.description).replace(/\r\n/g, '\n').replace(/\n/g, '<br>')}</p>`
+    : '';
 
   // ── Register button ───────────────────────────────────────────────────────────
   const registerHtml = registerUrl
@@ -204,8 +177,7 @@ function buildEventCard(e) {
     `<div class="event-badge">${badgeHtml}</div>` +
     `<div class="event-info">` +
       `<h4 class="event-title">${esc(e.summary || 'Untitled')}</h4>` +
-      dateRangeHtml + timeHtml + locationHtml + roomHtml + arrivalHtml + organizersHtml +
-      descHtml + bringHtml + registerHtml +
+      dateRangeHtml + timeHtml + locationHtml + descHtml + registerHtml +
     `</div>` +
   `</div>`;
 }
