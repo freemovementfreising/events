@@ -49,15 +49,12 @@ function renderGrid(events) {
   const eventDates = new Set(events.map(eventDateStr));
 
   const firstDow    = new Date(year, month, 1).getDay();
-  const leadBlanks  = (firstDow + 6) % 7; // Mon=0
+  const leadBlanks  = (firstDow + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today       = todayStr();
 
   let html = '';
-
-  for (let i = 0; i < leadBlanks; i++) {
-    html += '<div class="cal-day cal-day--empty"></div>';
-  }
+  for (let i = 0; i < leadBlanks; i++) html += '<div class="cal-day cal-day--empty"></div>';
 
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr  = `${year}-${padded(month + 1)}-${padded(d)}`;
@@ -78,28 +75,29 @@ function renderGrid(events) {
 
   document.getElementById('cal-days').innerHTML = html;
 
-  // Click any day with an event → scroll to it inside the events panel
   document.querySelectorAll('.cal-day--has-event').forEach(el => {
     el.addEventListener('click', () => {
       const wrapper = document.querySelector('.cal-events-wrapper');
       const target  = document.querySelector(`.event-card[data-date="${el.dataset.date}"]`);
-      if (target && wrapper) {
-        wrapper.scrollTop = Math.max(0, target.offsetTop - 16);
-      }
+      if (target && wrapper) wrapper.scrollTop = Math.max(0, target.offsetTop - 16);
     });
   });
 }
 
-// ── Build one event card HTML ─────────────────────────────────────────────────
+// ── Build one event card ───────────────────────────────────────────────────────
 function buildEventCard(e) {
   const d        = eventStartDate(e);
   const isAllDay = !!e.start.date;
   const dateStr  = eventDateStr(e);
+  const isPast   = dateStr < todayStr();
 
-  const dayNum  = d.getDate();
-  const monthSh = d.toLocaleDateString('en-GB', { month: 'short' });
-  const weekday = d.toLocaleDateString('en-GB', { weekday: 'short' });
+  // ── Date badge ────────────────────────────────────────────────────────────────
+  const badgeHtml =
+    `<span class="event-badge-day">${d.getDate()}</span>` +
+    `<span class="event-badge-month">${d.toLocaleDateString('en-GB', { month: 'short' })}</span>` +
+    `<span class="event-badge-weekday">${d.toLocaleDateString('en-GB', { weekday: 'short' })}</span>`;
 
+  // ── Time ──────────────────────────────────────────────────────────────────────
   let timeHtml = '';
   if (!isAllDay) {
     let timeStr = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -110,29 +108,47 @@ function buildEventCard(e) {
     timeHtml = `<p class="event-meta"><span class="event-icon">&#128336;</span>${timeStr}</p>`;
   }
 
+  // ── Location (clickable Maps link) ────────────────────────────────────────────
   const locationHtml = e.location
     ? `<p class="event-meta"><span class="event-icon">&#128205;</span>` +
       `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}" ` +
       `target="_blank" rel="noopener noreferrer" class="event-location-link">${esc(e.location)}</a></p>`
     : '';
 
-  // Extract "Register here: <url>" (handles URL on same line or next line)
-  let registerUrl = null;
-  let descCleaned = e.description || '';
-  const registerMatch = descCleaned.match(/register here\s*:\s*(https?:\/\/\S+)/i);
-  if (registerMatch) {
-    registerUrl = registerMatch[1];
-    descCleaned = descCleaned
-      .replace(/register here\s*:\s*https?:\/\/\S+[ \t]*(\r?\n)?/i, '')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+  // ── Structured fields (from proposals script) vs raw description fallback ─────
+  let roomHtml = '', arrivalHtml = '', organizersHtml = '',
+      descHtml = '', bringHtml = '', registerUrl = null;
+
+  if (e.room || e.arrivalTime || e.organizers || e.whatToDo || e.thingsToBring || e.registerUrl) {
+    // Structured event from proposals form
+    if (e.room)
+      roomHtml      = `<p class="event-meta"><span class="event-icon">&#128682;</span>${esc(e.room)}</p>`;
+    if (e.arrivalTime)
+      arrivalHtml   = `<p class="event-meta"><span class="event-icon">&#9201;</span>Arrive by ${esc(e.arrivalTime)}</p>`;
+    if (e.organizers)
+      organizersHtml = `<p class="event-meta event-meta--organizers"><span class="event-icon">&#128101;</span>${esc(e.organizers)}</p>`;
+    if (e.whatToDo)
+      descHtml      = `<p class="event-desc">${esc(e.whatToDo).replace(/\n/g, '<br>')}</p>`;
+    if (e.thingsToBring)
+      bringHtml     = `<p class="event-bring"><span class="event-bring-label">&#127890; Things to bring</span><br>${esc(e.thingsToBring).replace(/\n/g, '<br>')}</p>`;
+    registerUrl = e.registerUrl || null;
+
+  } else if (e.description) {
+    // Manually created event — fall back to parsing raw description
+    let descCleaned = e.description;
+    const m = descCleaned.match(/register here\s*:\s*(https?:\/\/\S+)/i);
+    if (m) {
+      registerUrl = m[1];
+      descCleaned = descCleaned
+        .replace(/register here\s*:\s*https?:\/\/\S+[ \t]*(\r?\n)?/i, '')
+        .split('\n').filter(line => /\p{L}/u.test(line)).join('\n')
+        .replace(/\n{3,}/g, '\n\n').trim();
+    }
+    if (descCleaned)
+      descHtml = `<p class="event-desc">${esc(descCleaned).replace(/\n/g, '<br>')}</p>`;
   }
 
-  const descHtml = descCleaned
-    ? `<p class="event-desc">${esc(descCleaned).replace(/\n/g, '<br>')}</p>`
-    : '';
-
-  const isPast = eventDateStr(e) < todayStr();
+  // ── Register button ───────────────────────────────────────────────────────────
   const registerHtml = registerUrl
     ? isPast
       ? `<span class="event-register-btn event-register-btn--disabled">Registration closed</span>`
@@ -140,14 +156,11 @@ function buildEventCard(e) {
     : '';
 
   return `<div class="event-card" data-date="${dateStr}">` +
-    `<div class="event-badge">` +
-      `<span class="event-badge-day">${dayNum}</span>` +
-      `<span class="event-badge-month">${monthSh}</span>` +
-      `<span class="event-badge-weekday">${weekday}</span>` +
-    `</div>` +
+    `<div class="event-badge">${badgeHtml}</div>` +
     `<div class="event-info">` +
       `<h4 class="event-title">${esc(e.summary || 'Untitled')}</h4>` +
-      timeHtml + locationHtml + descHtml + registerHtml +
+      timeHtml + locationHtml + roomHtml + arrivalHtml + organizersHtml +
+      descHtml + bringHtml + registerHtml +
     `</div>` +
   `</div>`;
 }
@@ -165,7 +178,6 @@ function renderEventList(events) {
   const past     = events.filter(e => eventDateStr(e) <  today);
   const upcoming = events.filter(e => eventDateStr(e) >= today);
 
-  // Helper: group an array of events into a Map keyed by "Month YYYY"
   function groupByMonth(evts) {
     const groups = new Map();
     for (const e of evts) {
@@ -186,21 +198,13 @@ function renderEventList(events) {
   }
 
   let html = renderGroups(groupByMonth(past));
-
-  // Divider — only shown visually when there are past events
-  html += `<div id="cal-upcoming-marker" class="cal-divider${past.length ? '' : ' cal-divider--hidden'}">` +
-    `<span>Upcoming</span></div>`;
-
-  if (upcoming.length) {
-    html += renderGroups(groupByMonth(upcoming));
-  } else {
-    html += '<p class="cal-empty">No upcoming events.</p>';
-  }
+  html += `<div id="cal-upcoming-marker" class="cal-divider${past.length ? '' : ' cal-divider--hidden'}"><span>Upcoming</span></div>`;
+  html += upcoming.length ? renderGroups(groupByMonth(upcoming)) : '<p class="cal-empty">No upcoming events.</p>';
 
   container.innerHTML = html;
 }
 
-// ── Scroll the events panel to the upcoming divider ───────────────────────────
+// ── Scroll events panel to upcoming divider ───────────────────────────────────
 function scrollToUpcoming() {
   const wrapper = document.querySelector('.cal-events-wrapper');
   const marker  = document.getElementById('cal-upcoming-marker');
@@ -227,8 +231,7 @@ function init() {
   });
 
   renderGrid([]);
-  document.getElementById('cal-events-list').innerHTML =
-    '<p class="cal-loading">Loading events\u2026</p>';
+  document.getElementById('cal-events-list').innerHTML = '<p class="cal-loading">Loading events\u2026</p>';
 
   fetchEvents()
     .then(events => {
