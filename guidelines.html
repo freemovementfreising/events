@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guidelines — Free Movement Collective Freising</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <img src="FMLogo.jpg" alt="Free Movement Collective Logo" class="logo">
+    <h1>Free Movement Collective Freising</h1>
+    <p class="subtitle">We dance freely — and you're invited.</p>
+    <a href="index.html" class="guidelines-btn">← Back to Home</a>
+  </header>
+
+  <main>
+    <div class="guidelines-page">
+      <div id="guidelines-content" class="guidelines-body">
+        <p style="color:#aaa;padding:1rem 0">Loading…</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    async function loadGuidelines() {
+      const container = document.getElementById('guidelines-content');
+      try {
+        const res = await fetch('data/guidelines.md');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        container.innerHTML = marked.parse(text);
+      } catch (err) {
+        console.error('Could not load guidelines:', err);
+        container.innerHTML = '<p style="color:#c00">Could not load guidelines.</p>';
+      }
+    }
+    loadGuidelines();
+  </script>
+</body>
+</html>
