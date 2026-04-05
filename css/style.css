@@ -274,6 +274,23 @@ main {
   line-height: 1.55;
 }
 
+.event-register-btn {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.35rem 1rem;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.event-register-btn:hover {
+  background: #444;
+}
+
 /* State messages */
 .cal-empty, .cal-loading {
   font-size: 0.88rem;

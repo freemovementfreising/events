@@ -135,8 +135,27 @@ function renderEventList(events) {
         ? `<p class="event-meta"><span class="event-icon">&#128205;</span>${esc(e.location)}</p>`
         : '';
 
-      const descHtml = e.description
-        ? `<p class="event-desc">${esc(e.description).replace(/\n/g, '<br>')}</p>`
+      // Extract "Register here: <url>" from description (case-insensitive).
+      // Handles URL on same line or the next line.
+      let registerUrl  = null;
+      let descCleaned  = e.description || '';
+      const registerRe = /register here\s*:\s*(https?:\/\/\S+)/i;
+      const registerMatch = descCleaned.match(registerRe);
+      if (registerMatch) {
+        registerUrl = registerMatch[1];
+        // Remove "Register here:" + URL (\s* handles newline between them) + trailing whitespace/newline
+        descCleaned = descCleaned
+          .replace(/register here\s*:\s*https?:\/\/\S+[ \t]*(\r?\n)?/i, '')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+
+      const descHtml = descCleaned
+        ? `<p class="event-desc">${esc(descCleaned).replace(/\n/g, '<br>')}</p>`
+        : '';
+
+      const registerHtml = registerUrl
+        ? `<a href="${esc(registerUrl)}" target="_blank" rel="noopener noreferrer" class="event-register-btn">Register</a>`
         : '';
 
       html +=
@@ -148,7 +167,7 @@ function renderEventList(events) {
           `</div>` +
           `<div class="event-info">` +
             `<h4 class="event-title">${esc(e.summary || 'Untitled')}</h4>` +
-            timeHtml + locationHtml + descHtml +
+            timeHtml + locationHtml + descHtml + registerHtml +
           `</div>` +
         `</div>`;
     }
