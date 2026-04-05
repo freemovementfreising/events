@@ -351,11 +351,47 @@ main {
   text-decoration-color: #1a1a1a;
 }
 
+.event-meta--organizers { color: #888; }
+
 .event-desc {
   font-size: 0.78rem;
-  color: #999;
+  color: #777;
   margin-top: 0.4rem;
   line-height: 1.55;
+}
+
+.event-bring {
+  font-size: 0.78rem;
+  color: #777;
+  margin-top: 0.4rem;
+  line-height: 1.55;
+}
+
+.event-bring-label {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Multi-day badge styles */
+.event-badge-day-range {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+.event-badge-range {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #ccc;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.event-badge-range-arrow {
+  font-size: 0.65rem;
+  color: #777;
+  line-height: 1;
 }
 
 .event-register-btn {
