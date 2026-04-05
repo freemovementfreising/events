@@ -24,14 +24,31 @@
     </div>
 
     <section class="calendar-section">
-      <iframe
-        src="https://calendar.google.com/calendar/embed?src=413e5457450bf4a5ac83232c06228ef63e0c55bf803b46424351ee1b47320bd3%40group.calendar.google.com&ctz=Europe%2FBerlin&bgcolor=%23F6DCA1"
-        class="google-calendar-embed"
-        frameborder="0"
-        scrolling="no"
-        title="Free Movement Collective Freising — Events">
-      </iframe>
+
+      <!-- Month grid -->
+      <div class="cal-grid-wrapper">
+        <div class="cal-grid-header">
+          <button id="cal-prev" class="cal-nav-btn" aria-label="Previous month">&#8249;</button>
+          <span id="cal-month-label" class="cal-month-label"></span>
+          <button id="cal-next" class="cal-nav-btn" aria-label="Next month">&#8250;</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div id="cal-days" class="cal-days"></div>
+      </div>
+
+      <!-- Upcoming events list -->
+      <div class="cal-events-wrapper">
+        <h2 class="cal-events-heading">Upcoming Events</h2>
+        <div id="cal-events-list"></div>
+      </div>
+
     </section>
   </main>
+
+  <script src="config.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
