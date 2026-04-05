@@ -215,6 +215,7 @@ main {
   padding: 1.5rem 1.25rem 1.75rem;
   position: relative;
   max-height: 560px;
+  overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
 }
@@ -316,6 +317,8 @@ main {
 .event-info {
   flex: 1;
   min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .event-title {
@@ -335,6 +338,18 @@ main {
 }
 
 .event-icon { font-size: 0.75rem; }
+
+.event-location-link {
+  color: #666;
+  text-decoration: underline;
+  text-decoration-color: #ccc;
+  text-underline-offset: 2px;
+}
+
+.event-location-link:hover {
+  color: #1a1a1a;
+  text-decoration-color: #1a1a1a;
+}
 
 .event-desc {
   font-size: 0.78rem;

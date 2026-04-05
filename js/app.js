@@ -111,7 +111,9 @@ function buildEventCard(e) {
   }
 
   const locationHtml = e.location
-    ? `<p class="event-meta"><span class="event-icon">&#128205;</span>${esc(e.location)}</p>`
+    ? `<p class="event-meta"><span class="event-icon">&#128205;</span>` +
+      `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}" ` +
+      `target="_blank" rel="noopener noreferrer" class="event-location-link">${esc(e.location)}</a></p>`
     : '';
 
   // Extract "Register here: <url>" (handles URL on same line or next line)
