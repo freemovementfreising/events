@@ -360,6 +360,13 @@ main {
   background: #444;
 }
 
+.event-register-btn--disabled {
+  background: #e8e4de;
+  color: #aaa;
+  cursor: default;
+  pointer-events: none;
+}
+
 /* State messages */
 .cal-empty, .cal-loading {
   font-size: 0.88rem;

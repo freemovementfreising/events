@@ -130,8 +130,11 @@ function buildEventCard(e) {
     ? `<p class="event-desc">${esc(descCleaned).replace(/\n/g, '<br>')}</p>`
     : '';
 
+  const isPast = eventDateStr(e) < todayStr();
   const registerHtml = registerUrl
-    ? `<a href="${esc(registerUrl)}" target="_blank" rel="noopener noreferrer" class="event-register-btn">Register</a>`
+    ? isPast
+      ? `<span class="event-register-btn event-register-btn--disabled">Registration closed</span>`
+      : `<a href="${esc(registerUrl)}" target="_blank" rel="noopener noreferrer" class="event-register-btn">Register</a>`
     : '';
 
   return `<div class="event-card" data-date="${dateStr}">` +
