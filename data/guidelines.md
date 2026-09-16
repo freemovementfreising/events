@@ -59,15 +59,15 @@ To ensure that everyone feels safe and welcome, we have formulated some shared a
 
 - All guidance is an invitation (e.g., guided exercises): always listen to your own body and do what feels right for you.
 - Take breaks whenever you need them. You are welcome to use the sides of the room, the balcony, or briefly step out.
-- If you decide to leave the session, please let the facilitator know.
+- If you decide to leave the workshop, please let the facilitator or angel person know.
 
 ---
 
 ## Conflict & Support
 
-- If discomfort, boundary-crossing, discrimination, or crisis occurs, we pause, address it, and give space to those affected.
+- **Angel Person:** At some events, there may be a designated angel person whose role is to support the well-being of the group. The angel person is available before, during, and after the event for anyone who would like to talk, seek support, or share concerns. They help foster a sense of safety, listen with care, and pay attention to the overall atmosphere in the room. If they notice tension, discomfort, or a situation that may need attention, they may gently check in and help clarify what is needed. While they are a supportive contact person, responsibility for maintaining a safe and respectful space is shared by the whole community.
 - The space is adaptable: if something needs attention, we stop and tend to it with care.
-- In this space, we center emotional care and allyship. When harm or discomfort arises, we respond by prioritizing the needs of those most affected — offering space, support, and protection from emotional burden. The person harmed leads the pace and depth of engagement, and others listen and support without centering their own emotional needs.
+- We center emotional care and allyship. When harm or discomfort arises, we respond by prioritizing the needs of those most affected — offering space, support, and protection from emotional burden. The person harmed leads the pace and depth of engagement, and others listen and support without centering their own emotional needs.
 
 ---
 
@@ -75,18 +75,17 @@ To ensure that everyone feels safe and welcome, we have formulated some shared a
 
 Our priority is to create a safe space for queer, trans, and non-white people. Everyone is welcome if you are ready to give space, listen, and practice allyship.
 
-We do not tolerate behaviour that undermines the dignity or self-esteem of any individual or creates an intimidating, hostile, or harassing environment. Discriminatory speech or conduct — whether racist, sexist, transphobic, or homophobic — is not acceptable, nor is any form of discrimination based on ability, age, class, religion, language, or ethnic origin. Verbal and/or physical aggression is not tolerated. In case of an incident, please contact the facilitator.
-
-We propose using the two restrooms on the dance floor level (3rd floor) as all-gender restrooms.
+We do not tolerate behaviour that undermines the dignity or self-esteem of any individual or creates an intimidating, hostile, or harassing environment. Discriminatory speech or conduct — whether racist, sexist, transphobic, or homophobic — is not acceptable, nor is any form of discrimination based on ability, age, class, religion, language, or ethnic origin. Verbal and/or physical aggression is not tolerated. In case of an incident, please contact the facilitator or the designated angel person.
 
 ---
 
 ## Accessibility
 
-- The venue is wheelchair accessible (3rd floor with elevator).
+- Not all venues are wheelchair accessible: there is a step leading to the dance and gymnastics room. The conference hall on the 3rd floor is accessible via a lift.
 - If you are sensitive to noise, you may bring earplugs or earmuffs. Sometimes we work without music; at other times the music gets louder.
 - The session can be held bilingually (German/English) if needed.
-- Feel free to let the facilitator know in advance if you have specific needs: [korinna.schmitz@hswt.de](mailto:korinna.schmitz@hswt.de)
+- Feel free to let the facilitator know in advance if you have specific needs: [ak-dancecollective.weihenstephan@hswt.de
+](mailto:ak-dancecollective.weihenstephan@hswt.de).
 
 ---
 
