@@ -464,6 +464,13 @@ main {
 }
 
 /* ── Guidelines button ── */
+.header-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.85rem;
+}
+
 .guidelines-btn {
   display: inline-block;
   margin-top: 0.85rem;
@@ -537,6 +544,31 @@ main {
   border: none;
   border-top: 1px solid #eee;
   margin: 1.25rem 0;
+}
+
+/* ── Home intro ── */
+.home-intro {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.07);
+  padding: 1.5rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.home-intro p {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.home-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.home-flag {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem !important;
 }
 
 /* ── Responsive ── */

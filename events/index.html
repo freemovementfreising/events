@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Movement Collective Freising</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header>
+    <img src="../FMLogo.jpg" alt="Free Movement Collective Logo" class="logo">
+    <h1>Free Movement Collective Freising</h1>
+    <p class="subtitle">We dance freely — and you're invited.</p>
+    <div class="header-buttons">
+      <a href="../" class="guidelines-btn">Curious? Learn More</a>
+      <a href="../guidelines.html" class="guidelines-btn">Read our Guidelines</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="action-buttons">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSd6sktSnoMkri3ScKt6hVvaoe81jDIT7dhwoluh3zf5EAZpSg/viewform"
+         target="_blank" rel="noopener noreferrer" class="action-btn">
+        Propose Event
+      </a>
+    </div>
+
+    <section class="calendar-section">
+
+      <!-- Month grid -->
+      <div class="cal-grid-wrapper">
+        <div class="cal-grid-header">
+          <button id="cal-prev" class="cal-nav-btn" aria-label="Previous month">&#8249;</button>
+          <span id="cal-month-label" class="cal-month-label"></span>
+          <button id="cal-next" class="cal-nav-btn" aria-label="Next month">&#8250;</button>
+          <button id="cal-today" class="cal-today-btn">Today</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div id="cal-days" class="cal-days"></div>
+      </div>
+
+      <!-- Upcoming events list -->
+      <div class="cal-events-wrapper">
+        <h2 class="cal-events-heading">Upcoming Events</h2>
+        <div id="cal-events-list"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="../config.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>
