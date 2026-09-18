@@ -91,6 +91,17 @@ header {
   animation: glowPulse 3s ease-in-out infinite;
 }
 
+.header-svg {
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  filter: drop-shadow(0 0 15px rgba(217, 165, 80, 0.3));
+}
+
 header h1 {
   font-size: 1.3rem;
   font-weight: 700;
@@ -668,6 +679,7 @@ main {
 /* ── Responsive ── */
 @media (max-width: 600px) {
   header h1 { font-size: 1.1rem; }
+  .header-svg { max-width: 480px; }
   .cal-day-num { font-size: 0.75rem; }
   .event-badge { width: 44px; }
   .event-badge-day { font-size: 1.1rem; }
